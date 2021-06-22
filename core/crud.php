@@ -92,4 +92,32 @@ if(isset($_POST['hapus_mesin'])){
     }
     
 }
+
+// stock out data mesin
+if(isset($_POST['out_mesin'])){
+    $id = $_POST['id_mesin'];
+    $penerima = $_POST['penerima'];
+    $jml_keluar = $_POST['jml_keluar'];
+    $keterangan = $_POST['keterangan'];
+    $created_at = date("Y/m/d");
+    $stok_sekarang = $_POST['stok_sekarang'];
+    $update_stok = $stok_sekarang-$jml_keluar;
+
+    // inputkan data ke tabel stok keluar
+    $result = mysqli_query($mysqli, "INSERT INTO tb_log_keluar(id_mesin, penerima, jml_keluar, keterangan,created_at) VALUES('$id','$penerima','$jml_keluar','$keterangan','$created_at')");
+    if($result){
+        // update data ke tabel stok mesin
+        $result = mysqli_query($mysqli, "UPDATE tb_stok_mesin SET stok='$update_stok' WHERE id='$id'");
+        if($result){
+            header("Location:../pages/log_keluar_mesin.php");
+        }
+        else{
+            echo "Error: " . $result . "<br>" . $mysqli->error;
+        }
+    }
+    else{
+        echo "Error: " . $result . "<br>" . $mysqli->error;
+    }
+    
+}
 ?>
