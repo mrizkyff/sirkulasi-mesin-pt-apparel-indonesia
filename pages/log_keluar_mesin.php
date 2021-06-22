@@ -3,9 +3,9 @@
 include_once("../core/config.php");
  
 // Fetch all users data from database
-$data_masuk = mysqli_query($mysqli, "SELECT * FROM tb_log_keluar INNER JOIN tb_stok_mesin ON tb_log_keluar.id_mesin=tb_stok_mesin.id");
+$data_keluar = mysqli_query($mysqli, "SELECT keluar.id as id, stok.id as id_mesin, jml_keluar, keterangan, nama_mesin, merk_mesin, stok, harga, deskripsi, keluar.created_at as created_at, penerima FROM tb_log_keluar as keluar INNER JOIN tb_stok_mesin as stok ON keluar.id_mesin=stok.id");
 
-// foreach ($data_masuk as $data) {
+// foreach ($data_keluar as $data) {
 //     print_r($data)
 // }
 // die();
@@ -169,7 +169,7 @@ $data_masuk = mysqli_query($mysqli, "SELECT * FROM tb_log_keluar INNER JOIN tb_s
                                             <th>Penerima</th>
                                             <th>Keterangan</th>
                                             <th>Tanggal Log</th>
-                                            <th width="270px">Aksi</th>
+                                            <th width="80px">Aksi</th>
                                         </tr>
                                     </thead>
                                     <tfoot>
@@ -187,7 +187,7 @@ $data_masuk = mysqli_query($mysqli, "SELECT * FROM tb_log_keluar INNER JOIN tb_s
                                     <tbody>
                                     <?php
                                         $no = 0;
-                                        foreach ($data_masuk as $data) {
+                                        foreach ($data_keluar as $data) {
                                         $no += 1;
                                     ?>
                                         <tr>
@@ -199,18 +199,65 @@ $data_masuk = mysqli_query($mysqli, "SELECT * FROM tb_log_keluar INNER JOIN tb_s
                                             <td><?= $data['keterangan'] ?></td>
                                             <td><?= $data['created_at'] ?></td>
                                             <td>
-                                                <a disabled href="#" class="btn disabled btn-info btn-sm btn-icon-split">
+                                                <a data-toggle="modal" data-target="#modalEdit<?= $data['id'] ?>" href="#" class="btn btn-info btn-sm btn-icon-split">
                                                     <span class="icon text-white-50">
                                                         <i class="fas fa-pencil-alt"></i>
                                                     </span>
                                                     <span class="text">Edit</span>
                                                 </a>
-                                                <a disabled href="#" class="btn disabled btn-danger btn-sm btn-icon-split">
+                                                <!-- <a disabled href="#" class="btn disabled btn-danger btn-sm btn-icon-split">
                                                     <span class="icon text-white-50">
                                                         <i class="fas fa-trash"></i>
                                                     </span>
                                                     <span class="text">Hapus</span>
-                                                </a>
+                                                </a> -->
+
+                                                <!-- Modal Edit -->
+                                                <div class="modal fade" id="modalEdit<?= $data['id'] ?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalLabel">Edit Log Masuk</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form method="POST" action="../core/crud.php">
+                                                        <div class="form-group row">
+                                                            <input type="hidden" name="id" value="<?= $data['id'] ?>">
+                                                            <label for="nama_mesin" class="col-4 col-form-label">Nama Mesin</label> 
+                                                            <div class="col-8">
+                                                            <input id="nama_mesin" name="nama_mesin" type="text" class="form-control" value="<?= $data['nama_mesin'] ?>" disabled>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row">
+                                                            <label for="jml_keluar" class="col-4 col-form-label">Jumlah Keluar</label> 
+                                                            <div class="col-8">
+                                                            <input id="jml_keluar" name="jml_keluar" type="text" class="form-control" value="<?= $data['jml_keluar'] ?>" disabled>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row">
+                                                            <label for="penerima" class="col-4 col-form-label">Penerima</label> 
+                                                            <div class="col-8">
+                                                            <input id="penerima" name="penerima" type="text" class="form-control" value="<?= $data['penerima'] ?>">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row">
+                                                            <label for="keterangan" class="col-4 col-form-label">Keterangan</label> 
+                                                            <div class="col-8">
+                                                            <textarea id="keterangan" name="keterangan" cols="40" rows="4" class="form-control"><?= $data['keterangan'] ?></textarea>
+                                                            </div>
+                                                        </div> 
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                        <button type="submit" name="edit_keluar" class="btn btn-info">Update <i class="fas fa-edit    "></i></button>
+                                                        </form>
+                                                    </div>
+                                                    </div>
+                                                </div>
+                                                </div>
 
                                             </td>
                                         </tr>

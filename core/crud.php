@@ -118,6 +118,36 @@ if(isset($_POST['out_mesin'])){
     else{
         echo "Error: " . $result . "<br>" . $mysqli->error;
     }
-    
+}
+
+// edit stock in/masuk
+if(isset($_POST['edit_masuk'])){
+    $id = $_POST['id'];
+    $keterangan = $_POST['keterangan'];
+
+    // update keterangan
+    $result = mysqli_query($mysqli, "UPDATE tb_log_masuk SET keterangan='$keterangan' WHERE id='$id'");
+    if($result){
+        header("Location:../pages/log_masuk_mesin.php");
+    }
+    else{
+        echo "Error: " . $result . "<br>" . $mysqli->error;
+    }
+}
+
+// edit stock out/keluar
+if(isset($_POST['edit_keluar'])){
+    $id = $_POST['id'];
+    $penerima = $_POST['penerima'];
+    $keterangan = $_POST['keterangan'];
+
+    // update keterangan
+    $result = mysqli_query($mysqli, "UPDATE tb_log_keluar SET penerima='$penerima', keterangan='$keterangan' WHERE id='$id'");
+    if($result){
+        header("Location:../pages/log_keluar_mesin.php");
+    }
+    else{
+        echo "Error: " . $result . "<br>" . $mysqli->error;
+    }
 }
 ?>

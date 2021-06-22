@@ -3,10 +3,10 @@
 include_once("../core/config.php");
  
 // Fetch all users data from database
-$data_masuk = mysqli_query($mysqli, "SELECT * FROM tb_log_masuk INNER JOIN tb_stok_mesin ON tb_log_masuk.id_mesin=tb_stok_mesin.id");
+$data_masuk = mysqli_query($mysqli, "SELECT masuk.id as id, stok.id as id_mesin, jml_masuk, keterangan, nama_mesin, merk_mesin, stok, harga, deskripsi, masuk.created_at as created_at FROM tb_log_masuk as masuk INNER JOIN tb_stok_mesin as stok ON masuk.id_mesin=stok.id");
 
 // foreach ($data_masuk as $data) {
-//     print_r($data)
+//     print_r($data);
 // }
 // die();
 ?>
@@ -174,7 +174,7 @@ $data_masuk = mysqli_query($mysqli, "SELECT * FROM tb_log_masuk INNER JOIN tb_st
                                             <th>Jumlah Masuk</th>
                                             <th>Keterangan</th>
                                             <th>Tanggal Log</th>
-                                            <th width="270px">Aksi</th>
+                                            <th width="175px">Aksi</th>
                                         </tr>
                                     </thead>
                                     <tfoot>
@@ -195,31 +195,73 @@ $data_masuk = mysqli_query($mysqli, "SELECT * FROM tb_log_masuk INNER JOIN tb_st
                                         $no += 1;
                                     ?>
                                         <tr>
-                                            <td><?= $no ?></td>
+                                            <td><?= $data['id'] ?></td>
                                             <td><?= $data['nama_mesin'] ?></td>
                                             <td><?= $data['merk_mesin'] ?></td>
                                             <td><?= $data['jml_masuk'] ?></td>
                                             <td><?= $data['keterangan'] ?></td>
                                             <td><?= $data['created_at'] ?></td>
                                             <td>
-                                                <a disabled data-toggle="modal" data-target="#modalRestock<?= $data['id'] ?>" href="#" class="btn btn-primary btn-sm btn-icon-split">
+                                                <a data-toggle="modal" data-target="#modalRestock<?= $data['id'] ?>" href="#" class="btn btn-primary btn-sm btn-icon-split">
                                                     <span class="icon text-white-50">
                                                         <i class="fas fa-retweet"></i>
                                                     </span>
                                                     <span class="text">Restock</span>
                                                 </a>
-                                                <a disabled href="#" class="btn disabled btn-info btn-sm btn-icon-split">
+                                                <a data-toggle="modal" data-target="#modalEdit<?= $data['id'] ?>" href="#" class="btn btn-info btn-sm btn-icon-split">
                                                     <span class="icon text-white-50">
                                                         <i class="fas fa-pencil-alt"></i>
                                                     </span>
                                                     <span class="text">Edit</span>
                                                 </a>
-                                                <a disabled href="#" class="btn disabled btn-danger btn-sm btn-icon-split">
+                                                <!-- <a disabled href="#" class="btn disabled btn-danger btn-sm btn-icon-split">
                                                     <span class="icon text-white-50">
                                                         <i class="fas fa-trash"></i>
                                                     </span>
                                                     <span class="text">Hapus</span>
-                                                </a>
+                                                </a> -->
+
+                                                <!-- Modal Edit -->
+                                                <div class="modal fade" id="modalEdit<?= $data['id'] ?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalLabel">Edit Log Masuk</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form method="POST" action="../core/crud.php">
+                                                        <div class="form-group row">
+                                                            <input type="hidden" name="id" value="<?= $data['id'] ?>">
+                                                            <label for="nama_mesin" class="col-4 col-form-label">Nama Mesin</label> 
+                                                            <div class="col-8">
+                                                            <input id="nama_mesin" name="nama_mesin" type="text" class="form-control" value="<?= $data['nama_mesin'] ?>" disabled>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row">
+                                                            <label for="jml_masuk" class="col-4 col-form-label">Jumlah Masuk</label> 
+                                                            <div class="col-8">
+                                                            <input id="jml_masuk" name="jml_masuk" type="text" class="form-control" value="<?= $data['jml_masuk'] ?>" disabled>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row">
+                                                            <label for="keterangan" class="col-4 col-form-label">Keterangan</label> 
+                                                            <div class="col-8">
+                                                            <textarea id="keterangan" name="keterangan" cols="40" rows="4" class="form-control"><?= $data['keterangan'] ?></textarea>
+                                                            </div>
+                                                        </div> 
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                        <button type="submit" name="edit_masuk" class="btn btn-info">Update <i class="fas fa-edit    "></i></button>
+                                                        </form>
+                                                    </div>
+                                                    </div>
+                                                </div>
+                                                </div>
+
                                                 <!-- Modal Restock-->
                                                 <div class="modal fade" id="modalRestock<?= $data['id'] ?>" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                                                 <div class="modal-dialog">
