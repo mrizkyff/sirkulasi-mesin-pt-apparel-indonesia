@@ -12,7 +12,7 @@ if(isset($_POST['submit_masuk'])){
     $created_at = date("Y/m/d");
 
     // input ke tabel mesin dulu
-    $result = mysqli_query($mysqli, "INSERT INTO tb_stok_mesin(nama_mesin, merk_mesin, harga, deskripsi) VALUES('$nama_mesin','$merk','$harga','$deskripsi')");
+    $result = mysqli_query($mysqli, "INSERT INTO tb_stok_mesin(nama_mesin, merk_mesin, stok,harga, deskripsi, created_at) VALUES('$nama_mesin','$merk', '$jml_masuk','$harga','$deskripsi','$created_at')");
 
     if ($result) {
         $last_id = $mysqli->insert_id;
@@ -38,12 +38,14 @@ if(isset($_POST['restock'])){
     $created_at = date("Y/m/d");
     $stok_sekarang = $_POST['stok_sekarang'];
     $update_stok = $stok_sekarang+$jml_masuk;
-
+    // print_r($_POST);
+    // die();
 
     // inputkan data ke tabel stok masuk
     $result = mysqli_query($mysqli, "INSERT INTO tb_log_masuk(id_mesin, jml_masuk, keterangan, created_at) VALUES('$id_mesin','$jml_masuk','$keterangan','$created_at')");
     if($result){
-        $result = mysqli_query($mysqli, "UPDATE tb_stok_mesin SET stok='$update_stok'");
+        // update data ke tabel stok mesin
+        $result = mysqli_query($mysqli, "UPDATE tb_stok_mesin SET stok='$update_stok' WHERE id='$id_mesin'");
         if($result){
             header("Location:../pages/log_masuk_mesin.php");
         }
@@ -54,5 +56,40 @@ if(isset($_POST['restock'])){
     else{
         echo "Error: " . $result . "<br>" . $mysqli->error;
     }
+}
+
+// update data mesin
+if(isset($_POST['update_mesin'])){
+    $id = $_POST['id'];
+    $nama_mesin = $_POST['nama_mesin'];
+    $merk = $_POST['merk'];
+    $harga = $_POST['harga'];
+    $deskripsi = $_POST['deskripsi'];
+    
+    // update data ke tabel stok mesin
+    $result = mysqli_query($mysqli, "UPDATE tb_stok_mesin SET nama_mesin='$nama_mesin', merk_mesin='$merk', harga='$harga', deskripsi='$deskripsi' WHERE id='$id'");
+    if($result){
+        header("Location:../pages/stok_mesin.php");
+    }
+    else{
+        echo "Error: " . $result . "<br>" . $mysqli->error;
+    }
+    
+}
+
+// softdelete data mesin
+if(isset($_POST['hapus_mesin'])){
+    $id = $_POST['id'];
+    $deleted_at = date("Y/m/d");
+
+    // update data ke tabel stok mesin
+    $result = mysqli_query($mysqli, "UPDATE tb_stok_mesin SET deleted_at='$deleted_at' WHERE id='$id'");
+    if($result){
+        header("Location:../pages/stok_mesin.php");
+    }
+    else{
+        echo "Error: " . $result . "<br>" . $mysqli->error;
+    }
+    
 }
 ?>

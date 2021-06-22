@@ -3,12 +3,8 @@
 include_once("../core/config.php");
  
 // Fetch all users data from database
-$data_masuk = mysqli_query($mysqli, "SELECT * FROM tb_log_masuk INNER JOIN tb_stok_mesin ON tb_log_masuk.id_mesin=tb_stok_mesin.id");
+$data_mesin = mysqli_query($mysqli, "SELECT * FROM tb_stok_mesin WHERE deleted_at=0 ORDER BY id ASC");
 
-// foreach ($data_masuk as $data) {
-//     print_r($data)
-// }
-// die();
 ?>
  
 <!DOCTYPE html>
@@ -22,7 +18,7 @@ $data_masuk = mysqli_query($mysqli, "SELECT * FROM tb_log_masuk INNER JOIN tb_st
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Sistem Informasi Mekanik | Log Masuk Mesin</title>
+    <title>Sistem Informasi Mekanik | Stok Mesin</title>
 
     <!-- Custom fonts for this template-->
     <link href="../vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -64,14 +60,14 @@ $data_masuk = mysqli_query($mysqli, "SELECT * FROM tb_log_masuk INNER JOIN tb_st
             </div>
 
             <!-- Nav Item - Stock In -->
-            <li class="nav-item active">
+            <li class="nav-item">
                 <a class="nav-link" href="log_masuk_mesin.php">
                     <i class="fas fa-fw fa-cart-arrow-down"></i>
                     <span>Stock In</span></a>
             </li>
 
             <!-- Nav Item - Stock Mesin -->
-            <li class="nav-item">
+            <li class="nav-item active">
                 <a class="nav-link" href="stok_mesin.php">
                     <i class="fas fa-fw fa-boxes"></i>
                     <span>Stock Mesin</span></a>
@@ -149,19 +145,13 @@ $data_masuk = mysqli_query($mysqli, "SELECT * FROM tb_log_masuk INNER JOIN tb_st
                 <div class="container-fluid">
 
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-2 text-gray-800">Log Masuk Mesin</h1>
-                    <p class="mb-4">Tabel berikut ini merupakan tabel dari log masuk mesin yang telah diinputkan, untuk daftar mesin dapat dilihat pada halama berikut <a href="stok_mesin.php">Stock Mesin</a>.</p>
+                    <h1 class="h3 mb-2 text-gray-800">Daftar dan Stok Mesin</h1>
+                    <p class="mb-4">Tabel berikut ini merupakan tabel dari mesin yang telah terdaftar, untuk menambahkan mesin baru dapat dilakukan pada menu <a href="log_masuk_mesin.php">Log Masuk Mesin</a>.</p>
 
                     <!-- DataTales Example -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Data Stock In/Log Masuk Mesin</h6>
-                            <a data-toggle="modal" data-target="#modalTambah" href="#" class="btn btn-success btn-icon-split btn-sm" style="float: right; margin-top: -25px;">
-                                <span class="icon text-white-50">
-                                    <i class="fas fa-plus"></i>
-                                </span>
-                                <span class="text">Tambah Mesin Baru</span>
-                            </a>
+                            <h6 class="m-0 font-weight-bold text-primary">Data Mesin</h6>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
@@ -171,9 +161,10 @@ $data_masuk = mysqli_query($mysqli, "SELECT * FROM tb_log_masuk INNER JOIN tb_st
                                             <th width="30px">No.</th>
                                             <th>Nama Mesin</th>
                                             <th>Merek Mesin</th>
-                                            <th>Jumlah Masuk</th>
-                                            <th>Keterangan</th>
-                                            <th>Tanggal Log</th>
+                                            <th>Stok Sekarang</th>
+                                            <th>Harga</th>
+                                            <th>Deskripsi Mesin</th>
+                                            <th>Tanggal Input</th>
                                             <th width="270px">Aksi</th>
                                         </tr>
                                     </thead>
@@ -182,57 +173,113 @@ $data_masuk = mysqli_query($mysqli, "SELECT * FROM tb_log_masuk INNER JOIN tb_st
                                             <th>No.</th>
                                             <th>Nama Mesin</th>
                                             <th>Merek Mesin</th>
-                                            <th>Jumlah Masuk</th>
-                                            <th>Keterangan</th>
-                                            <th>Tanggal Log</th>
+                                            <th>Stok Sekarang</th>
+                                            <th>Harga</th>
+                                            <th>Deskripsi Mesin</th>
+                                            <th>Tanggal Input</th>
                                             <th>Aksi</th>
                                         </tr>
                                     </tfoot>
                                     <tbody>
                                     <?php
                                         $no = 0;
-                                        foreach ($data_masuk as $data) {
+                                        foreach ($data_mesin as $data) {
                                         $no += 1;
                                     ?>
                                         <tr>
                                             <td><?= $no ?></td>
                                             <td><?= $data['nama_mesin'] ?></td>
                                             <td><?= $data['merk_mesin'] ?></td>
-                                            <td><?= $data['jml_masuk'] ?></td>
-                                            <td><?= $data['keterangan'] ?></td>
+                                            <td><?= $data['stok'] ?></td>
+                                            <td><?= $data['harga'] ?></td>
+                                            <td><?= $data['deskripsi'] ?></td>
                                             <td><?= $data['created_at'] ?></td>
                                             <td>
-                                                <a disabled data-toggle="modal" data-target="#modalRestock<?= $data['id'] ?>" href="#" class="btn btn-primary btn-sm btn-icon-split">
+                                                <a data-toggle="modal" data-target="#modalRestock<?= $data['id'] ?>" href="#" class="btn btn-primary btn-sm btn-icon-split">
                                                     <span class="icon text-white-50">
                                                         <i class="fas fa-retweet"></i>
                                                     </span>
                                                     <span class="text">Restock</span>
                                                 </a>
-                                                <a disabled href="#" class="btn disabled btn-info btn-sm btn-icon-split">
+                                                <a data-toggle="modal" data-target="#modalEdit<?= $data['id'] ?>" href="#" class="btn btn-info btn-sm btn-icon-split">
                                                     <span class="icon text-white-50">
                                                         <i class="fas fa-pencil-alt"></i>
                                                     </span>
                                                     <span class="text">Edit</span>
                                                 </a>
-                                                <a disabled href="#" class="btn disabled btn-danger btn-sm btn-icon-split">
+                                                <a data-toggle="modal" data-target="#modalHapus<?= $data['id'] ?>" href="#" class="btn btn-danger btn-sm btn-icon-split">
                                                     <span class="icon text-white-50">
                                                         <i class="fas fa-trash"></i>
                                                     </span>
                                                     <span class="text">Hapus</span>
                                                 </a>
-                                                <!-- Modal Restock-->
-                                                <div class="modal fade" id="modalRestock<?= $data['id'] ?>" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                                <!-- Modal Edit -->
+                                                <div class="modal fade" id="modalEdit<?= $data['id'] ?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                                 <div class="modal-dialog">
                                                     <div class="modal-content">
                                                     <div class="modal-header">
-                                                        <h5 class="modal-title" id="staticBackdropLabel">Restock Mesin</h5>
+                                                        <h5 class="modal-title" id="exampleModalLabel">Edit Data Mesin</h5>
                                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                         <span aria-hidden="true">&times;</span>
                                                         </button>
                                                     </div>
                                                     <div class="modal-body">
-                                                    <form method="POST" action="../core/crud.php">
-                                                        <input type="hidden" name="id_mesin" value="<?= $data['id_mesin'] ?>">
+                                                        <form method="POST" action="../core/crud.php">
+                                                        <input type="hidden" name="id" value="<?= $data['id'] ?>">
+                                                        <input type="hidden" name="stok_sekarang" value="<?= $data['stok'] ?>">
+                                                        <div class="form-group row">
+                                                            <label for="nama_mesin" class="col-4 col-form-label">Nama Mesin</label> 
+                                                            <div class="col-8">
+                                                            <input id="nama_mesin" name="nama_mesin" type="text" class="form-control" value="<?= $data['nama_mesin'] ?>">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row">
+                                                            <label for="merk" class="col-4 col-form-label">Merek Mesin</label> 
+                                                            <div class="col-8">
+                                                            <input id="merk" name="merk" placeholder="Merek Mesin" type="text" class="form-control" value="<?= $data['merk_mesin'] ?>">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row">
+                                                            <label for="stok" class="col-4 col-form-label">Stok Sekarang</label> 
+                                                            <div class="col-8">
+                                                            <input id="stok" name="stok" placeholder="Jumlah Restock Mesin Masuk" type="text" class="form-control" disabled value="<?= $data['stok'] ?>">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row">
+                                                            <label for="harga" class="col-4 col-form-label">Harga</label> 
+                                                            <div class="col-8">
+                                                            <input id="harga" name="harga" placeholder="Harga Mesin" type="text" class="form-control" value="<?= $data['harga'] ?>">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row">
+                                                            <label for="deskripsi" class="col-4 col-form-label">Deskripsi Mesin</label> 
+                                                            <div class="col-8">
+                                                            <textarea id="deskripsi" name="deskripsi" cols="40" rows="2" class="form-control"><?= $data['deskripsi'] ?></textarea>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                        <button type="submit" name="update_mesin" class="btn btn-info">Update <i class="fas fa-edit    "></i></button>
+                                                        </form>
+                                                    </div>
+                                                    </div>
+                                                </div>
+                                                </div>
+
+                                                <!-- Modal Restock-->
+                                                <div class="modal fade" id="modalRestock<?= $data['id'] ?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalLabel">Restok Mesin</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form method="POST" action="../core/crud.php">
+                                                        <input type="hidden" name="id_mesin" value="<?= $data['id'] ?>">
                                                         <input type="hidden" name="stok_sekarang" value="<?= $data['stok'] ?>">
                                                         <div class="form-group row">
                                                             <label for="nama_mesin" class="col-4 col-form-label">Nama Mesin</label> 
@@ -247,7 +294,7 @@ $data_masuk = mysqli_query($mysqli, "SELECT * FROM tb_log_masuk INNER JOIN tb_st
                                                             </div>
                                                         </div>
                                                         <div class="form-group row">
-                                                            <label for="jml_masuk" class="col-4 col-form-label">Jumlah Masuk</label> 
+                                                            <label for="jml_masuk" class="col-4 col-form-label">Jumlah Restok</label> 
                                                             <div class="col-8">
                                                             <input id="jml_masuk" name="jml_masuk" placeholder="Jumlah Restock Mesin Masuk" type="text" class="form-control">
                                                             </div>
@@ -274,10 +321,36 @@ $data_masuk = mysqli_query($mysqli, "SELECT * FROM tb_log_masuk INNER JOIN tb_st
                                                     <div class="modal-footer">
                                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
                                                         <button type="submit" name="restock" class="btn btn-primary">Restock <i class="fas fa-paper-plane    "></i></button>
+                                                        </form>
                                                     </div>
-                                                    </form>
                                                     </div>
                                                 </div>
+                                                </div>
+
+                                                <!-- Modal Hapus -->
+                                                <div class="modal fade" id="modalHapus<?= $data['id'] ?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalLabel">Hapus Data</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        Apakah yakin anda akan menghapus item <b><?= $data['nama_mesin']?><b>?
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                        <form action="../core/crud.php" method="POST">
+                                                        <input type="hidden" name="id" value="<?= $data['id'] ?>">
+                                                        <button type="submit" name="hapus_mesin" class="btn btn-danger"><i class="fas fa-trash    "></i> Hapus</button>
+                                                        </form>
+                                                    </div>
+                                                    </div>
+                                                </div>
+                                                </div>
+
                                                 </div>
                                             </td>
                                         </tr>
@@ -317,63 +390,7 @@ $data_masuk = mysqli_query($mysqli, "SELECT * FROM tb_log_masuk INNER JOIN tb_st
         <i class="fas fa-angle-up"></i>
     </a>
 
-    <!-- Modal Tambah-->
-    <div class="modal fade" id="modalTambah" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title" id="staticBackdropLabel">Input Mesin Baru</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-        <div class="modal-body">
-        <form method="POST" action="../core/crud.php">
-            <div class="form-group row">
-                <label for="nama_mesin" class="col-4 col-form-label">Nama Mesin</label> 
-                <div class="col-8">
-                <input id="nama_mesin" name="nama_mesin" placeholder="Nama Mesin" type="text" class="form-control">
-                </div>
-            </div>
-            <div class="form-group row">
-                <label for="merk" class="col-4 col-form-label">Merek Mesin</label> 
-                <div class="col-8">
-                <input id="merk" name="merk" placeholder="Merek Mesin" type="text" class="form-control">
-                </div>
-            </div>
-            <div class="form-group row">
-                <label for="jml_masuk" class="col-4 col-form-label">Jumlah Masuk</label> 
-                <div class="col-8">
-                <input id="jml_masuk" name="jml_masuk" placeholder="Jumlah Mesin Masuk" type="text" class="form-control">
-                </div>
-            </div>
-            <div class="form-group row">
-                <label for="harga" class="col-4 col-form-label">Harga</label> 
-                <div class="col-8">
-                <input id="harga" name="harga" placeholder="Harga Mesin" type="text" class="form-control">
-                </div>
-            </div>
-            <div class="form-group row">
-                <label for="deskripsi" class="col-4 col-form-label">Deskripsi Mesin</label> 
-                <div class="col-8">
-                <textarea id="deskripsi" name="deskripsi" cols="40" rows="2" class="form-control"></textarea>
-                </div>
-            </div>
-            <div class="form-group row">
-                <label for="keterangan" class="col-4 col-form-label">Keterangan</label> 
-                <div class="col-8">
-                <textarea id="keterangan" name="keterangan" cols="40" rows="4" class="form-control"></textarea>
-                </div>
-            </div> 
-        </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-            <button type="submit" name="submit_masuk" class="btn btn-success">Simpan <i class="fas fa-save    "></i></button>
-        </div>
-        </form>
-        </div>
-    </div>
-    </div>
+
 
     
 
