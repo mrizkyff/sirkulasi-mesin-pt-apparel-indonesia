@@ -1,7 +1,7 @@
 <?php
 session_start();
 if($_SESSION['status'] != 'login'){
-    header("Location: ../login.php");
+    header("Location: ../index.php");
 }
 
 // panggil file config database
