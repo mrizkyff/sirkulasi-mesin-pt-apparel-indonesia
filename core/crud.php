@@ -150,4 +150,14 @@ if(isset($_POST['edit_keluar'])){
         echo "Error: " . $result . "<br>" . $mysqli->error;
     }
 }
+
+// untuk logout
+if(isset($_POST['logout'])){
+    session_start();
+    $_SESSION['username'] = '';
+    unset($_SESSION['username']);
+    session_unset();
+    session_destroy();
+    header("Location: ../login.php");
+}
 ?>

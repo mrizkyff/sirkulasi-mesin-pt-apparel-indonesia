@@ -1,4 +1,9 @@
 <?php
+session_start();
+if($_SESSION['status'] != 'login'){
+    header("Location: ../login.php");
+}
+
 // panggil file config database
 include_once("../core/config.php");
  
@@ -94,7 +99,7 @@ $data_keluar = mysqli_query($mysqli, "SELECT keluar.id as id, stok.id as id_mesi
 
             <!-- Nav Item - Stock Out  -->
             <li class="nav-item">
-                <a class="nav-link" href="#">
+                <a data-toggle="modal" data-target="#logoutModal" class="nav-link" href="#">
                     <i class="fas fa-fw fa-lock"></i>
                     <span>Log Out</span></a>
             </li>
@@ -305,15 +310,17 @@ $data_keluar = mysqli_query($mysqli, "SELECT keluar.id as id, stok.id as id_mesi
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Yakin untuk keluar?</h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
-                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                <div class="modal-body">Pilih "Logout" di bawah ini untuk keluar.</div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="login.html">Logout</a>
+                    <form action="../core/crud.php" method="POST">
+                        <button name="logout" type="submit"class="btn btn-danger"><i class="fas fa-lock"></i> Logout</button>
+                    </form>
                 </div>
             </div>
         </div>

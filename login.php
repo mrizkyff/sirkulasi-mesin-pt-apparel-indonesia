@@ -1,3 +1,32 @@
+<?php
+    // panggil file config database
+    include_once("core/config.php");
+    
+    // memulai session
+    session_start();
+
+    
+    if(isset($_POST['username']) && isset($_POST['password'])){
+        // mengambil isian dari form login
+        $username = $_POST['username'];
+        $password = $_POST['password'];
+
+        $result = mysqli_query($mysqli, "SELECT COUNT(*) as total FROM tb_user WHERE username='".$username."' AND password='".$password."'");
+        $cek = mysqli_fetch_assoc($result);
+
+
+        if($cek['total'] > 0){
+            // print_r([$cek['total'] => 'ok']);
+            session_start();
+            $_SESSION['status'] = 'login';
+            header("Location: pages/stok_mesin.php");
+        }
+        else{
+            // print_r([$cek['total'] => 'gak']);
+            header("Location: login.php");
+        }
+    }
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -39,10 +68,10 @@
                                     <div class="text-center">
                                         <h1 class="h4 text-gray-900 mb-4">Login ke Sistem!</h1>
                                     </div>
-                                    <form class="user">
+                                    <form class="user" action="" method="POST">
                                         <div class="form-group">
                                             <input type="text" class="form-control form-control-user"
-                                                id="email" name="email"
+                                                id="username" name="username"
                                                 placeholder="Username Anda">
                                         </div>
                                         <div class="form-group">
@@ -55,9 +84,8 @@
                                                 <label class="custom-control-label" for="customCheck">Ingat saya</label>
                                             </div>
                                         </div>
-                                        <a href="index.html" class="btn btn-primary btn-user btn-block">
-                                            Login
-                                        </a>
+                                        <input type="submit" class="btn btn-primary btn-user btn-block" value="Login">
+                                        </input>
                                     </form>
                                     <hr>
                                     <!-- <div class="text-center">
@@ -82,8 +110,6 @@
     <!-- Core plugin JavaScript-->
     <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 
-    <!-- Custom scripts for all pages-->
-    <script src="js/sb-admin-2.min.js"></script>
 
 </body>
 
