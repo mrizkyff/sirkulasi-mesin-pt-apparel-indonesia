@@ -229,7 +229,7 @@ $data_mesin = mysqli_query($mysqli, "SELECT * FROM tb_stok_mesin WHERE stock_sta
                                                 <div class="modal-dialog">
                                                     <div class="modal-content">
                                                     <div class="modal-header">
-                                                        <h5 class="modal-title" id="exampleModalLabel">Edit Log Masuk</h5>
+                                                        <h5 class="modal-title" id="exampleModalLabel">Edit Log Keluar</h5>
                                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                         <span aria-hidden="true">&times;</span>
                                                         </button>

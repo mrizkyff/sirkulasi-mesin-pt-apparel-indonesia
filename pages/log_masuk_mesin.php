@@ -7,9 +7,13 @@ if($_SESSION['status'] != 'login'){
 include_once("../core/config.php");
  
 // Fetch all users data from database
-$data_masuk = mysqli_query($mysqli, "SELECT masuk.id as id, stok.id as id_mesin, jml_masuk, keterangan, nama_mesin, merk_mesin, stok, harga, deskripsi, masuk.created_at as created_at FROM tb_log_masuk as masuk INNER JOIN tb_stok_mesin as stok ON masuk.id_mesin=stok.id");
+$data_masuk = mysqli_query($mysqli, "SELECT masuk.id as id, stok.id as id_mesin, no_id_mesin, masuk.keterangan, stok.nama_mesin, masuk.mekanik, masuk.created_at as created_at FROM tb_log_masuk as masuk INNER JOIN tb_stok_mesin as stok ON masuk.id_mesin=stok.id");
 
-// foreach ($data_masuk as $data) {
+$data_mesin = mysqli_query($mysqli, "SELECT * FROM tb_stok_mesin WHERE stock_status = 'keluar' ");
+
+// var_dump($data_masuk);
+// var_dump($mysqli->error);
+// foreach ($data_mesin as $data) {
 //     print_r($data);
 // }
 // die();
@@ -165,7 +169,7 @@ $data_masuk = mysqli_query($mysqli, "SELECT masuk.id as id, stok.id as id_mesin,
                                 <span class="icon text-white-50">
                                     <i class="fas fa-plus"></i>
                                 </span>
-                                <span class="text">Tambah Mesin Baru</span>
+                                <span class="text">Tambah Pemasukan Mesin</span>
                             </a>
                         </div>
                         <div class="card-body">
@@ -175,22 +179,22 @@ $data_masuk = mysqli_query($mysqli, "SELECT masuk.id as id, stok.id as id_mesin,
                                         <tr>
                                             <th width="30px">No.</th>
                                             <th>Nama Mesin</th>
-                                            <th>Merek Mesin</th>
-                                            <th>Jumlah Masuk</th>
+                                            <th>No. ID Mesin</th>
+                                            <th>Mekanik</th>
                                             <th>Keterangan</th>
-                                            <th>Tanggal Log</th>
+                                            <th>Tanggal</th>
                                             <th width="175px">Aksi</th>
                                         </tr>
                                     </thead>
                                     <tfoot>
                                         <tr>
-                                            <th>No.</th>
+                                            <th width="30px">No.</th>
                                             <th>Nama Mesin</th>
-                                            <th>Merek Mesin</th>
-                                            <th>Jumlah Masuk</th>
+                                            <th>No. ID Mesin</th>
+                                            <th>Mekanik</th>
                                             <th>Keterangan</th>
-                                            <th>Tanggal Log</th>
-                                            <th>Aksi</th>
+                                            <th>Tanggal</th>
+                                            <th width="175px">Aksi</th>
                                         </tr>
                                     </tfoot>
                                     <tbody>
@@ -200,10 +204,10 @@ $data_masuk = mysqli_query($mysqli, "SELECT masuk.id as id, stok.id as id_mesin,
                                         $no += 1;
                                     ?>
                                         <tr>
-                                            <td><?= $data['id'] ?></td>
+                                            <td><?= $no ?></td>
                                             <td><?= $data['nama_mesin'] ?></td>
-                                            <td><?= $data['merk_mesin'] ?></td>
-                                            <td><?= $data['jml_masuk'] ?></td>
+                                            <td><?= $data['no_id_mesin'] ?></td>
+                                            <td><?= $data['mekanik'] ?></td>
                                             <td><?= $data['keterangan'] ?></td>
                                             <td><?= $data['created_at'] ?></td>
                                             <td>
@@ -240,15 +244,21 @@ $data_masuk = mysqli_query($mysqli, "SELECT masuk.id as id, stok.id as id_mesin,
                                                         <form method="POST" action="../core/crud.php">
                                                         <div class="form-group row">
                                                             <input type="hidden" name="id" value="<?= $data['id'] ?>">
+                                                            <label for="no_id_mesin" class="col-4 col-form-label">ID Mesin</label> 
+                                                            <div class="col-8">
+                                                            <input id="no_id_mesin" name="no_id_mesin" type="text" class="form-control" value="<?= $data['no_id_mesin'] ?>" disabled>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row">
                                                             <label for="nama_mesin" class="col-4 col-form-label">Nama Mesin</label> 
                                                             <div class="col-8">
                                                             <input id="nama_mesin" name="nama_mesin" type="text" class="form-control" value="<?= $data['nama_mesin'] ?>" disabled>
                                                             </div>
                                                         </div>
                                                         <div class="form-group row">
-                                                            <label for="jml_masuk" class="col-4 col-form-label">Jumlah Masuk</label> 
+                                                            <label for="mekanik" class="col-4 col-form-label">Mekanik</label> 
                                                             <div class="col-8">
-                                                            <input id="jml_masuk" name="jml_masuk" type="text" class="form-control" value="<?= $data['jml_masuk'] ?>" disabled>
+                                                            <input id="mekanik" name="mekanik" type="text" class="form-control" value="<?= $data['mekanik'] ?>">
                                                             </div>
                                                         </div>
                                                         <div class="form-group row">
@@ -369,7 +379,7 @@ $data_masuk = mysqli_query($mysqli, "SELECT masuk.id as id, stok.id as id_mesin,
     <div class="modal-dialog">
         <div class="modal-content">
         <div class="modal-header">
-            <h5 class="modal-title" id="staticBackdropLabel">Input Mesin Baru</h5>
+            <h5 class="modal-title" id="staticBackdropLabel">Input Pemasukan Mesin</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
             </button>
@@ -379,31 +389,18 @@ $data_masuk = mysqli_query($mysqli, "SELECT masuk.id as id, stok.id as id_mesin,
             <div class="form-group row">
                 <label for="nama_mesin" class="col-4 col-form-label">Nama Mesin</label> 
                 <div class="col-8">
-                <input id="nama_mesin" name="nama_mesin" placeholder="Nama Mesin" type="text" class="form-control">
+                <select class="form-control" id="id_mesin" name="id_mesin">
+                    <option >Pilih Mesin</option>
+                    <?php foreach ($data_mesin as $mesin) { ?>
+                        <option value="<?= $mesin['id']?>"><?= $mesin['no_id_mesin'].' | '.$mesin['nama_mesin'] ?></option >
+                    <?php } ?>
+                </select>
                 </div>
             </div>
             <div class="form-group row">
-                <label for="merk" class="col-4 col-form-label">Merek Mesin</label> 
+                <label for="mekanik" class="col-4 col-form-label">Mekanik</label> 
                 <div class="col-8">
-                <input id="merk" name="merk" placeholder="Merek Mesin" type="text" class="form-control">
-                </div>
-            </div>
-            <div class="form-group row">
-                <label for="jml_masuk" class="col-4 col-form-label">Jumlah Masuk</label> 
-                <div class="col-8">
-                <input id="jml_masuk" name="jml_masuk" placeholder="Jumlah Mesin Masuk" type="text" class="form-control">
-                </div>
-            </div>
-            <div class="form-group row">
-                <label for="harga" class="col-4 col-form-label">Harga</label> 
-                <div class="col-8">
-                <input id="harga" name="harga" placeholder="Harga Mesin" type="text" class="form-control">
-                </div>
-            </div>
-            <div class="form-group row">
-                <label for="deskripsi" class="col-4 col-form-label">Deskripsi Mesin</label> 
-                <div class="col-8">
-                <textarea id="deskripsi" name="deskripsi" cols="40" rows="2" class="form-control"></textarea>
+                <input type="text" id="mekanik" name="mekanik" cols="40" rows="2" class="form-control" placeholder="Nama Mekanik">
                 </div>
             </div>
             <div class="form-group row">
