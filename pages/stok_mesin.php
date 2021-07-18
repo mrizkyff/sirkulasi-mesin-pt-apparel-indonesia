@@ -174,7 +174,7 @@ $data_mesin = mysqli_query($mysqli, "SELECT * FROM tb_stok_mesin WHERE deleted_a
                                             <th>Nama Mesin</th>
                                             <th>Status</th>
                                             <th>Tanggal Input</th>
-                                            <th width="330px">Aksi</th>
+                                            <th width="200px">Aksi</th>
                                         </tr>
                                     </thead>
                                     <tfoot>
@@ -184,7 +184,7 @@ $data_mesin = mysqli_query($mysqli, "SELECT * FROM tb_stok_mesin WHERE deleted_a
                                             <th>Nama Mesin</th>
                                             <th>Status</th>
                                             <th>Tanggal Input</th>
-                                            <th width="330px">Aksi</th>
+                                            <th>Aksi</th>
                                         </tr>
                                     </tfoot>
                                     <tbody>
@@ -200,12 +200,6 @@ $data_mesin = mysqli_query($mysqli, "SELECT * FROM tb_stok_mesin WHERE deleted_a
                                             <td><?= strtoupper($data['status']) ?></td>
                                             <td><?= $data['created_at'] ?></td>
                                             <td>
-                                                <!-- <a data-toggle="modal" data-target="#modalOut<?= $data['id'] ?>" href="#" class="btn btn-warning btn-sm btn-icon-split">
-                                                    <span class="icon text-white-50">
-                                                        <i class="fas fa-cart-arrow-down"></i>
-                                                    </span>
-                                                    <span class="text">Out</span>
-                                                </a> -->
                                                 <a data-toggle="modal" data-target="#modalEdit<?= $data['id'] ?>" href="#" class="btn btn-info btn-sm btn-icon-split">
                                                     <span class="icon text-white-50">
                                                         <i class="fas fa-pencil-alt"></i>
@@ -295,54 +289,6 @@ $data_mesin = mysqli_query($mysqli, "SELECT * FROM tb_stok_mesin WHERE deleted_a
                                                         <form action="../core/crud.php" method="POST">
                                                         <input type="hidden" name="id" value="<?= $data['id'] ?>">
                                                         <button type="submit" name="hapus_mesin" class="btn btn-danger"><i class="fas fa-trash    "></i> Hapus</button>
-                                                        </form>
-                                                    </div>
-                                                    </div>
-                                                </div>
-                                                </div>
-
-                                                <!-- Modal Out -->
-                                                <div class="modal fade" id="modalOut<?= $data['id'] ?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                                <div class="modal-dialog">
-                                                    <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title" id="exampleModalLabel">Stock Out Mesin</h5>
-                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                        <span aria-hidden="true">&times;</span>
-                                                        </button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                    <form method="POST" action="../core/crud.php">
-                                                        <input type="hidden" name="id_mesin" value="<?= $data['id'] ?>">
-                                                        <input type="hidden" name="stok_sekarang" value="<?= $data['stok'] ?>">
-                                                        <div class="form-group row">
-                                                            <label for="nama_mesin" class="col-4 col-form-label">Nama Mesin</label> 
-                                                            <div class="col-8">
-                                                            
-                                                        </div>
-                                                        <div class="form-group row">
-                                                            <label for="jml_keluar" class="col-4 col-form-label">Jumlah Stock Out</label> 
-                                                            <div class="col-8">
-                                                            <input id="jml_keluar" name="jml_keluar" placeholder="Jumlah Stok Out Mesin" type="text" class="form-control">
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group row">
-                                                            <label for="penerima" class="col-4 col-form-label">Penerima</label> 
-                                                            <div class="col-8">
-                                                            <input id="penerima" name="penerima" placeholder="Penerima" type="text" class="form-control">
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group row">
-                                                            <label for="keterangan" class="col-4 col-form-label">Keterangan</label> 
-                                                            <div class="col-8">
-                                                            <textarea id="keterangan" name="keterangan" cols="40" rows="4" class="form-control"></textarea>
-                                                            </div>
-                                                        </div> 
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                                        <form action="../core/crud.php" method="POST">
-                                                        <button type="submit" name="out_mesin" class="btn btn-warning"><i class="fas fa-cart-arrow-down    "></i> Out</button>
                                                         </form>
                                                     </div>
                                                     </div>

@@ -205,7 +205,7 @@ $data_mesin = mysqli_query($mysqli, "SELECT * FROM tb_stok_mesin WHERE stock_sta
                                     ?>
                                         <tr>
                                             <td><?= $no ?></td>
-                                            <td><?= $data['no_id_mesin'] ?></td>
+                                            <td><?= strtoupper($data['nama_mesin']) ?></td>
                                             <td><?= $data['nama_mesin'] ?></td>
                                             <td><?= $data['mekanik'] ?></td>
                                             <td><?= $data['keterangan'] ?></td>
@@ -217,12 +217,6 @@ $data_mesin = mysqli_query($mysqli, "SELECT * FROM tb_stok_mesin WHERE stock_sta
                                                     </span>
                                                     <span class="text">Edit</span>
                                                 </a>
-                                                <!-- <a disabled href="#" class="btn disabled btn-danger btn-sm btn-icon-split">
-                                                    <span class="icon text-white-50">
-                                                        <i class="fas fa-trash"></i>
-                                                    </span>
-                                                    <span class="text">Hapus</span>
-                                                </a> -->
 
                                                 <!-- Modal Edit -->
                                                 <div class="modal fade" id="modalEdit<?= $data['id'] ?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -246,7 +240,7 @@ $data_mesin = mysqli_query($mysqli, "SELECT * FROM tb_stok_mesin WHERE stock_sta
                                                         <div class="form-group row">
                                                             <label for="nama_mesin" class="col-4 col-form-label">Nama Mesin</label> 
                                                             <div class="col-8">
-                                                            <input id="nama_mesin" name="nama_mesin" type="text" class="form-control" value="<?= $data['nama_mesin'] ?>" disabled>
+                                                            <input id="nama_mesin" name="nama_mesin" type="text" class="form-control" value="<?= strtoupper($data['nama_mesin']) ?>" disabled>
                                                             </div>
                                                         </div>
                                                         <div class="form-group row">
@@ -327,7 +321,7 @@ $data_mesin = mysqli_query($mysqli, "SELECT * FROM tb_stok_mesin WHERE stock_sta
                 <select class="form-control" id="id_mesin" name="id_mesin">
                     <option >Pilih Mesin</option>
                     <?php foreach ($data_mesin as $mesin) { ?>
-                        <option value="<?= $mesin['id']?>"><?= $mesin['no_id_mesin'].' | '.$mesin['nama_mesin'] ?></option >
+                        <option value="<?= $mesin['id']?>"><?= $mesin['no_id_mesin'].' | '.strtoupper($mesin['nama_mesin']) ?></option >
                     <?php } ?>
                 </select>
                 </div>
