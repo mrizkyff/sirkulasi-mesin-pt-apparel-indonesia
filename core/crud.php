@@ -1,7 +1,7 @@
 <?php
 include_once("config.php");
 
-// tambah log masuk mesin baru
+// tambah mesin baru
 if(isset($_POST['submit_baru'])){
     $nama_mesin = $_POST['nama_mesin'];
     $no_id_mesin = $_POST['no_id_mesin'];
@@ -63,24 +63,23 @@ if(isset($_POST['hapus_mesin'])){
     
 }
 
-// input restok ke dalam log
-if(isset($_POST['restock'])){
+// input data ke dalam log keluar
+if(isset($_POST['submit_keluar'])){
     $id_mesin = $_POST['id_mesin'];
-    $jml_masuk = $_POST['jml_masuk'];
+    $mekanik = $_POST['mekanik'];
     $keterangan = $_POST['keterangan'];
     $created_at = date("Y/m/d");
-    $stok_sekarang = $_POST['stok_sekarang'];
-    $update_stok = $stok_sekarang+$jml_masuk;
+    $update_stok = 'keluar';
     // print_r($_POST);
     // die();
 
-    // inputkan data ke tabel stok masuk
-    $result = mysqli_query($mysqli, "INSERT INTO tb_log_masuk(id_mesin, jml_masuk, keterangan, created_at) VALUES('$id_mesin','$jml_masuk','$keterangan','$created_at')");
+    // inputkan data ke tabel stok keluar
+    $result = mysqli_query($mysqli, "INSERT INTO tb_log_keluar(id_mesin, mekanik, keterangan, created_at) VALUES('$id_mesin','$mekanik','$keterangan','$created_at')");
     if($result){
-        // update data ke tabel stok mesin
-        $result = mysqli_query($mysqli, "UPDATE tb_stok_mesin SET stok='$update_stok' WHERE id='$id_mesin'");
+        // update stock_status menjadi keluar
+        $result = mysqli_query($mysqli, "UPDATE tb_stok_mesin SET stock_status='$update_stok' WHERE id='$id_mesin'");
         if($result){
-            header("Location:../pages/log_masuk_mesin.php");
+            header("Location:../pages/log_keluar.php");
         }
         else{
             echo "Error: " . $result . "<br>" . $mysqli->error;
@@ -140,11 +139,11 @@ if(isset($_POST['edit_masuk'])){
 // edit stock out/keluar
 if(isset($_POST['edit_keluar'])){
     $id = $_POST['id'];
-    $penerima = $_POST['penerima'];
+    $mekanik = $_POST['mekanik'];
     $keterangan = $_POST['keterangan'];
 
     // update keterangan
-    $result = mysqli_query($mysqli, "UPDATE tb_log_keluar SET penerima='$penerima', keterangan='$keterangan' WHERE id='$id'");
+    $result = mysqli_query($mysqli, "UPDATE tb_log_keluar SET mekanik='$mekanik', keterangan='$keterangan' WHERE id='$id'");
     if($result){
         header("Location:../pages/log_keluar_mesin.php");
     }

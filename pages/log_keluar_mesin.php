@@ -8,10 +8,14 @@ if($_SESSION['status'] != 'login'){
 include_once("../core/config.php");
  
 // Fetch all users data from database
-$data_keluar = mysqli_query($mysqli, "SELECT keluar.id as id, stok.id as id_mesin, jml_keluar, keterangan, nama_mesin, merk_mesin, stok, harga, deskripsi, keluar.created_at as created_at, penerima FROM tb_log_keluar as keluar INNER JOIN tb_stok_mesin as stok ON keluar.id_mesin=stok.id");
+$data_keluar = mysqli_query($mysqli, "SELECT keluar.id as id, stok.id as id_mesin, stok.no_id_mesin as no_id_mesin, keluar.keterangan as keterangan, stok.nama_mesin as nama_mesin, stok.status as status, stok.stock_status as stock_status, keluar.mekanik as mekanik, keluar.created_at as created_at FROM tb_log_keluar as keluar INNER JOIN tb_stok_mesin as stok ON keluar.id_mesin=stok.id");
 
-// foreach ($data_keluar as $data) {
-//     print_r($data)
+$data_mesin = mysqli_query($mysqli, "SELECT * FROM tb_stok_mesin WHERE stock_status = 'stock' ");
+
+// var_dump($data_mesin);
+// var_dump($mysqli->error);
+// foreach ($data_mesin as $data) {
+//     print_r($data);
 // }
 // die();
 ?>
@@ -161,6 +165,12 @@ $data_keluar = mysqli_query($mysqli, "SELECT keluar.id as id, stok.id as id_mesi
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
                             <h6 class="m-0 font-weight-bold text-primary">Data Stock Out/Log Keluar Mesin</h6>
+                            <a data-toggle="modal" data-target="#modalTambah" href="#" class="btn btn-success btn-icon-split btn-sm" style="float: right; margin-top: -25px;">
+                                <span class="icon text-white-50">
+                                    <i class="fas fa-plus"></i>
+                                </span>
+                                <span class="text">Tambah Pengeluaran Mesin</span>
+                            </a>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
@@ -168,25 +178,23 @@ $data_keluar = mysqli_query($mysqli, "SELECT keluar.id as id, stok.id as id_mesi
                                     <thead>
                                         <tr>
                                             <th width="30px">No.</th>
+                                            <th>No. ID Mesin</th>
                                             <th>Nama Mesin</th>
-                                            <th>Merek Mesin</th>
-                                            <th>Jumlah Keluar</th>
-                                            <th>Penerima</th>
+                                            <th>Mekanik</th>
                                             <th>Keterangan</th>
-                                            <th>Tanggal Log</th>
+                                            <th>Tanggal</th>
                                             <th width="80px">Aksi</th>
                                         </tr>
                                     </thead>
                                     <tfoot>
                                         <tr>
-                                            <th>No.</th>
+                                            <th width="30px">No.</th>
+                                            <th>No. ID Mesin</th>
                                             <th>Nama Mesin</th>
-                                            <th>Merek Mesin</th>
-                                            <th>Jumlah Keluar</th>
-                                            <th>Penerima</th>
+                                            <th>Mekanik</th>
                                             <th>Keterangan</th>
-                                            <th>Tanggal Log</th>
-                                            <th>Aksi</th>
+                                            <th>Tanggal</th>
+                                            <th width="80px">Aksi</th>
                                         </tr>
                                     </tfoot>
                                     <tbody>
@@ -197,10 +205,9 @@ $data_keluar = mysqli_query($mysqli, "SELECT keluar.id as id, stok.id as id_mesi
                                     ?>
                                         <tr>
                                             <td><?= $no ?></td>
+                                            <td><?= $data['no_id_mesin'] ?></td>
                                             <td><?= $data['nama_mesin'] ?></td>
-                                            <td><?= $data['merk_mesin'] ?></td>
-                                            <td><?= $data['jml_keluar'] ?></td>
-                                            <td><?= $data['penerima'] ?></td>
+                                            <td><?= $data['mekanik'] ?></td>
                                             <td><?= $data['keterangan'] ?></td>
                                             <td><?= $data['created_at'] ?></td>
                                             <td>
@@ -231,21 +238,21 @@ $data_keluar = mysqli_query($mysqli, "SELECT keluar.id as id, stok.id as id_mesi
                                                         <form method="POST" action="../core/crud.php">
                                                         <div class="form-group row">
                                                             <input type="hidden" name="id" value="<?= $data['id'] ?>">
+                                                            <label for="no_id_mesin" class="col-4 col-form-label">ID Mesin</label> 
+                                                            <div class="col-8">
+                                                            <input id="no_id_mesin" name="no_id_mesin" type="text" class="form-control" value="<?= $data['no_id_mesin'] ?>" disabled>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row">
                                                             <label for="nama_mesin" class="col-4 col-form-label">Nama Mesin</label> 
                                                             <div class="col-8">
                                                             <input id="nama_mesin" name="nama_mesin" type="text" class="form-control" value="<?= $data['nama_mesin'] ?>" disabled>
                                                             </div>
                                                         </div>
                                                         <div class="form-group row">
-                                                            <label for="jml_keluar" class="col-4 col-form-label">Jumlah Keluar</label> 
+                                                            <label for="mekanik" class="col-4 col-form-label">Mekanik</label> 
                                                             <div class="col-8">
-                                                            <input id="jml_keluar" name="jml_keluar" type="text" class="form-control" value="<?= $data['jml_keluar'] ?>" disabled>
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group row">
-                                                            <label for="penerima" class="col-4 col-form-label">Penerima</label> 
-                                                            <div class="col-8">
-                                                            <input id="penerima" name="penerima" type="text" class="form-control" value="<?= $data['penerima'] ?>">
+                                                            <input id="mekanik" name="mekanik" type="text" class="form-control" value="<?= $data['mekanik'] ?>">
                                                             </div>
                                                         </div>
                                                         <div class="form-group row">
@@ -302,7 +309,50 @@ $data_keluar = mysqli_query($mysqli, "SELECT keluar.id as id, stok.id as id_mesi
         <i class="fas fa-angle-up"></i>
     </a>
 
-    
+    <!-- Modal Tambah-->
+    <div class="modal fade" id="modalTambah" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">Input Pengeluaran Mesin</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+        <form method="POST" action="../core/crud.php">
+            <div class="form-group row">
+                <label for="nama_mesin" class="col-4 col-form-label">Nama Mesin</label> 
+                <div class="col-8">
+                <select class="form-control" id="id_mesin" name="id_mesin">
+                    <option >Pilih Mesin</option>
+                    <?php foreach ($data_mesin as $mesin) { ?>
+                        <option value="<?= $mesin['id']?>"><?= $mesin['no_id_mesin'].' | '.$mesin['nama_mesin'] ?></option >
+                    <?php } ?>
+                </select>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="mekanik" class="col-4 col-form-label">Mekanik</label> 
+                <div class="col-8">
+                <input type="text" id="mekanik" name="mekanik" cols="40" rows="2" class="form-control" placeholder="Nama Mekanik">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="keterangan" class="col-4 col-form-label">Keterangan</label> 
+                <div class="col-8">
+                <textarea id="keterangan" name="keterangan" cols="40" rows="4" class="form-control"></textarea>
+                </div>
+            </div> 
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+            <button type="submit" name="submit_keluar" class="btn btn-success">Simpan <i class="fas fa-save    "></i></button>
+        </div>
+        </form>
+        </div>
+    </div>
+    </div>
 
     <!-- Logout Modal-->
     <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
