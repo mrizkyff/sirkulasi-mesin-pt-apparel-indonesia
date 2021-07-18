@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jun 23, 2021 at 09:35 AM
+-- Generation Time: Jul 18, 2021 at 05:20 PM
 -- Server version: 10.4.18-MariaDB
 -- PHP Version: 7.4.16
 
@@ -80,8 +80,7 @@ CREATE TABLE `stok` (
 CREATE TABLE `tb_log_keluar` (
   `id` int(11) NOT NULL,
   `id_mesin` int(11) NOT NULL,
-  `penerima` varchar(255) NOT NULL,
-  `jml_keluar` varchar(255) NOT NULL,
+  `mekanik` varchar(255) NOT NULL,
   `keterangan` varchar(255) NOT NULL,
   `created_at` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -90,9 +89,11 @@ CREATE TABLE `tb_log_keluar` (
 -- Dumping data for table `tb_log_keluar`
 --
 
-INSERT INTO `tb_log_keluar` (`id`, `id_mesin`, `penerima`, `jml_keluar`, `keterangan`, `created_at`) VALUES
-(1, 6, 'xxxxx', '2', 'xxxx', '2021/06/22'),
-(2, 6, 'Nex Colony2', '2', '2nd out', '2021/06/22');
+INSERT INTO `tb_log_keluar` (`id`, `id_mesin`, `mekanik`, `keterangan`, `created_at`) VALUES
+(1, 9, 'Anas edited ', 'untuk pengembalian line 1 edited', '2021/07/18'),
+(2, 10, 'Arif edited', 'mau dipakai di line 1 edited 1', '2021/07/18'),
+(3, 11, 'Om Ian Febrian', 'Mau digunakan untuk acara dncc show hehe', '2021/07/18'),
+(4, 12, 'Tante Lia-lia', 'buat dipakai itu bth nya hehe', '2021/07/18');
 
 -- --------------------------------------------------------
 
@@ -103,7 +104,7 @@ INSERT INTO `tb_log_keluar` (`id`, `id_mesin`, `penerima`, `jml_keluar`, `ketera
 CREATE TABLE `tb_log_masuk` (
   `id` int(11) NOT NULL,
   `id_mesin` int(11) NOT NULL,
-  `jml_masuk` varchar(255) NOT NULL,
+  `mekanik` varchar(255) NOT NULL,
   `keterangan` varchar(255) NOT NULL,
   `created_at` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -112,21 +113,11 @@ CREATE TABLE `tb_log_masuk` (
 -- Dumping data for table `tb_log_masuk`
 --
 
-INSERT INTO `tb_log_masuk` (`id`, `id_mesin`, `jml_masuk`, `keterangan`, `created_at`) VALUES
-(1, 1, '120', 'Untuk Persiapan Panen padi', '22/06/2021'),
-(2, 1, '2', 'Restock ulang', '22/06/2021'),
-(3, 2, '130', 'Persiapan UNBK', '22/06/2021'),
-(4, 5, '99', 'Yes bgt deh', '2021/06/22'),
-(5, 5, '100', 'Restok untuk mesin hyundai', '2021/06/22'),
-(6, 5, '11', '', '2021/06/22'),
-(7, 5, '11', 'Restok lagii hehe', '2021/06/22'),
-(8, 5, '1', 'Restok dari stok mesin', '2021/06/22'),
-(9, 6, '100', 'Persiapan Genset 2021', '2021/06/22'),
-(10, 6, '1', 'tambah 1 aja lagi', '2021/06/22'),
-(11, 6, '', '1', '2021/06/22'),
-(12, 6, '1', 'cobain 1 dulu', '2021/06/22'),
-(13, 6, '1', 'xxx', '2021/06/22'),
-(14, 6, '1', 'dari stok mesin', '2021/06/22');
+INSERT INTO `tb_log_masuk` (`id`, `id_mesin`, `mekanik`, `keterangan`, `created_at`) VALUES
+(1, 8, 'yayas', 'testing input', '2021/07/18'),
+(2, 9, 'Anas lagi', 'dibalikin lagi sama anas', '2021/07/18'),
+(3, 10, 'Om Johan hehe', 'dibalikin dari line 1 untuk disimpan lagi oke', '2021/07/18'),
+(4, 12, 'Tante Lia - ian', 'sudah dikembalikan ya', '2021/07/18');
 
 -- --------------------------------------------------------
 
@@ -137,10 +128,9 @@ INSERT INTO `tb_log_masuk` (`id`, `id_mesin`, `jml_masuk`, `keterangan`, `create
 CREATE TABLE `tb_stok_mesin` (
   `id` int(11) NOT NULL,
   `nama_mesin` varchar(255) NOT NULL,
-  `merk_mesin` varchar(255) NOT NULL,
-  `stok` varchar(255) NOT NULL,
-  `harga` varchar(255) NOT NULL,
-  `deskripsi` varchar(255) NOT NULL,
+  `no_id_mesin` varchar(255) NOT NULL,
+  `status` varchar(255) NOT NULL,
+  `stock_status` varchar(10) NOT NULL,
   `created_at` varchar(255) NOT NULL,
   `deleted_at` varchar(225) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -149,11 +139,12 @@ CREATE TABLE `tb_stok_mesin` (
 -- Dumping data for table `tb_stok_mesin`
 --
 
-INSERT INTO `tb_stok_mesin` (`id`, `nama_mesin`, `merk_mesin`, `stok`, `harga`, `deskripsi`, `created_at`, `deleted_at`) VALUES
-(1, 'Honda MRE320s', 'Hondas', '199', '150000001', '', '', '2021/06/22'),
-(2, 'Yamaha GH2MR', 'Yamaha', '199', '12000000', 'Mesin Genset', '', '0'),
-(5, 'Hyundai', 'H123', '222', '40000123', 'Oke', '', '0'),
-(6, 'Isuzu 2JZsss', 'Isuzusss', '102', '175000000111', '123ss', '2021/06/22', '0');
+INSERT INTO `tb_stok_mesin` (`id`, `nama_mesin`, `no_id_mesin`, `status`, `stock_status`, `created_at`, `deleted_at`) VALUES
+(8, 'sn', 'sn111', 'sewa', '0', '2021/07/18', '2021/07/18'),
+(9, 'obras', 'OB1', 'aset', 'keluar', '2021/07/18', '0'),
+(10, 'kansai', 'OVRD1kns1', 'sewa', 'stock', '2021/07/18', '0'),
+(11, 'dn', 'DNCC1', 'aset', 'keluar', '2021/07/18', '0'),
+(12, 'bth', 'BTHBTH111', 'aset', 'stock', '2021/07/18', '2021/07/18');
 
 -- --------------------------------------------------------
 
@@ -238,19 +229,19 @@ ALTER TABLE `stok`
 -- AUTO_INCREMENT for table `tb_log_keluar`
 --
 ALTER TABLE `tb_log_keluar`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `tb_log_masuk`
 --
 ALTER TABLE `tb_log_masuk`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `tb_stok_mesin`
 --
 ALTER TABLE `tb_stok_mesin`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `tb_user`
