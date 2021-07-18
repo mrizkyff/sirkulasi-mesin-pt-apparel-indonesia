@@ -23,7 +23,7 @@
         }
         else{
             // print_r([$cek['total'] => 'gak']);
-            header("Location: login.php");
+            header("Location: index.php");
         }
     }
 ?>

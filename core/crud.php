@@ -2,32 +2,65 @@
 include_once("config.php");
 
 // tambah log masuk mesin baru
-if(isset($_POST['submit_masuk'])){
+if(isset($_POST['submit_baru'])){
     $nama_mesin = $_POST['nama_mesin'];
-    $merk = $_POST['merk'];
-    $jml_masuk = $_POST['jml_masuk'];
-    $harga = $_POST['harga'];
-    $deskripsi = $_POST['deskripsi'];
-    $keterangan = $_POST['keterangan'];
+    $no_id_mesin = $_POST['no_id_mesin'];
+    $status = $_POST['status'];
     $created_at = date("Y/m/d");
-
+    $stock_status = "stock";
     // input ke tabel mesin dulu
-    $result = mysqli_query($mysqli, "INSERT INTO tb_stok_mesin(nama_mesin, merk_mesin, stok,harga, deskripsi, created_at) VALUES('$nama_mesin','$merk', '$jml_masuk','$harga','$deskripsi','$created_at')");
+    $result = mysqli_query($mysqli, "INSERT INTO tb_stok_mesin(nama_mesin, no_id_mesin, status, stock_status, created_at) VALUES('$nama_mesin','$no_id_mesin','$status','$stock_status','$created_at')");
 
     if ($result) {
-        $last_id = $mysqli->insert_id;
+        // $last_id = $mysqli->insert_id;
         // inputkan data ke tabel stok masuk
-        $result = mysqli_query($mysqli, "INSERT INTO tb_log_masuk(id_mesin, jml_masuk, keterangan, created_at) VALUES('$last_id','$jml_masuk','$keterangan','$created_at')");
-        if($result){
-            header("Location:../pages/log_masuk_mesin.php");
-        }
-        else{
-            echo "Error: " . $result . "<br>" . $mysqli->error;
-        }
+        // $result = mysqli_query($mysqli, "INSERT INTO tb_log_masuk(id_mesin, keterangan, created_at) VALUES('$last_id','$keterangan','$created_at')");
+        // if($result){
+        //     header("Location:../pages/log_masuk_mesin.php");
+        // }
+        // else{
+        //     echo "Error: " . $result . "<br>" . $mysqli->error;
+        // }
+        header("Location:../pages/log_masuk_mesin.php");
+
     } 
     else {
         echo "Error: " . $result . "<br>" . $mysqli->error;
     }
+}
+
+// update data mesin
+if(isset($_POST['update_mesin'])){
+    $id = $_POST['id'];
+    $nama_mesin = $_POST['nama_mesin'];
+    $no_id_mesin = $_POST['no_id_mesin'];
+    $status = $_POST['status'];
+    
+    // update data ke tabel stok mesin
+    $result = mysqli_query($mysqli, "UPDATE tb_stok_mesin SET nama_mesin='$nama_mesin', no_id_mesin='$no_id_mesin', status='$status' WHERE id='$id'");
+    if($result){
+        header("Location:../pages/stok_mesin.php");
+    }
+    else{
+        echo "Error: " . $result . "<br>" . $mysqli->error;
+    }
+    
+}
+
+// softdelete data mesin
+if(isset($_POST['hapus_mesin'])){
+    $id = $_POST['id'];
+    $deleted_at = date("Y/m/d");
+
+    // update data ke tabel stok mesin
+    $result = mysqli_query($mysqli, "UPDATE tb_stok_mesin SET deleted_at='$deleted_at' WHERE id='$id'");
+    if($result){
+        header("Location:../pages/stok_mesin.php");
+    }
+    else{
+        echo "Error: " . $result . "<br>" . $mysqli->error;
+    }
+    
 }
 
 // input restok ke dalam log
@@ -58,40 +91,9 @@ if(isset($_POST['restock'])){
     }
 }
 
-// update data mesin
-if(isset($_POST['update_mesin'])){
-    $id = $_POST['id'];
-    $nama_mesin = $_POST['nama_mesin'];
-    $merk = $_POST['merk'];
-    $harga = $_POST['harga'];
-    $deskripsi = $_POST['deskripsi'];
-    
-    // update data ke tabel stok mesin
-    $result = mysqli_query($mysqli, "UPDATE tb_stok_mesin SET nama_mesin='$nama_mesin', merk_mesin='$merk', harga='$harga', deskripsi='$deskripsi' WHERE id='$id'");
-    if($result){
-        header("Location:../pages/stok_mesin.php");
-    }
-    else{
-        echo "Error: " . $result . "<br>" . $mysqli->error;
-    }
-    
-}
 
-// softdelete data mesin
-if(isset($_POST['hapus_mesin'])){
-    $id = $_POST['id'];
-    $deleted_at = date("Y/m/d");
 
-    // update data ke tabel stok mesin
-    $result = mysqli_query($mysqli, "UPDATE tb_stok_mesin SET deleted_at='$deleted_at' WHERE id='$id'");
-    if($result){
-        header("Location:../pages/stok_mesin.php");
-    }
-    else{
-        echo "Error: " . $result . "<br>" . $mysqli->error;
-    }
-    
-}
+
 
 // stock out data mesin
 if(isset($_POST['out_mesin'])){

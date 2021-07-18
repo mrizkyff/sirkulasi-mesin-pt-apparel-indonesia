@@ -7,7 +7,7 @@ if($_SESSION['status'] != 'login'){
 include_once("../core/config.php");
  
 // Fetch all users data from database
-$data_mesin = mysqli_query($mysqli, "SELECT * FROM tb_stok_mesin WHERE deleted_at=0 ORDER BY id ASC");
+$data_mesin = mysqli_query($mysqli, "SELECT * FROM tb_stok_mesin WHERE deleted_at=0 and stock_status = 'stock' ORDER BY id ASC");
 
 ?>
  
@@ -157,6 +157,12 @@ $data_mesin = mysqli_query($mysqli, "SELECT * FROM tb_stok_mesin WHERE deleted_a
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
                             <h6 class="m-0 font-weight-bold text-primary">Data Mesin</h6>
+                            <a data-toggle="modal" data-target="#modalTambah" href="#" class="btn btn-success btn-icon-split btn-sm" style="float: right; margin-top: -25px;">
+                                <span class="icon text-white-50">
+                                    <i class="fas fa-plus"></i>
+                                </span>
+                                <span class="text">Tambah Mesin Baru</span>
+                            </a>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
@@ -164,25 +170,21 @@ $data_mesin = mysqli_query($mysqli, "SELECT * FROM tb_stok_mesin WHERE deleted_a
                                     <thead>
                                         <tr>
                                             <th width="30px">No.</th>
+                                            <th>No. ID Mesin</th>
                                             <th>Nama Mesin</th>
-                                            <th>Merek Mesin</th>
-                                            <th>Stok Sekarang</th>
-                                            <th>Harga</th>
-                                            <th>Deskripsi Mesin</th>
+                                            <th>Status</th>
                                             <th>Tanggal Input</th>
                                             <th width="330px">Aksi</th>
                                         </tr>
                                     </thead>
                                     <tfoot>
                                         <tr>
-                                            <th>No.</th>
+                                            <th width="30px">No.</th>
+                                            <th>No. ID Mesin</th>
                                             <th>Nama Mesin</th>
-                                            <th>Merek Mesin</th>
-                                            <th>Stok Sekarang</th>
-                                            <th>Harga</th>
-                                            <th>Deskripsi Mesin</th>
+                                            <th>Status</th>
                                             <th>Tanggal Input</th>
-                                            <th>Aksi</th>
+                                            <th width="330px">Aksi</th>
                                         </tr>
                                     </tfoot>
                                     <tbody>
@@ -193,25 +195,17 @@ $data_mesin = mysqli_query($mysqli, "SELECT * FROM tb_stok_mesin WHERE deleted_a
                                     ?>
                                         <tr>
                                             <td><?= $no ?></td>
-                                            <td><?= $data['nama_mesin'] ?></td>
-                                            <td><?= $data['merk_mesin'] ?></td>
-                                            <td><?= $data['stok'] ?></td>
-                                            <td><?= $data['harga'] ?></td>
-                                            <td><?= $data['deskripsi'] ?></td>
+                                            <td><?= $data['no_id_mesin'] ?></td>
+                                            <td><?= strtoupper($data['nama_mesin']) ?></td>
+                                            <td><?= strtoupper($data['status']) ?></td>
                                             <td><?= $data['created_at'] ?></td>
                                             <td>
-                                                <a data-toggle="modal" data-target="#modalRestock<?= $data['id'] ?>" href="#" class="btn btn-primary btn-sm btn-icon-split">
-                                                    <span class="icon text-white-50">
-                                                        <i class="fas fa-retweet"></i>
-                                                    </span>
-                                                    <span class="text">Restock</span>
-                                                </a>
-                                                <a data-toggle="modal" data-target="#modalOut<?= $data['id'] ?>" href="#" class="btn btn-warning btn-sm btn-icon-split">
+                                                <!-- <a data-toggle="modal" data-target="#modalOut<?= $data['id'] ?>" href="#" class="btn btn-warning btn-sm btn-icon-split">
                                                     <span class="icon text-white-50">
                                                         <i class="fas fa-cart-arrow-down"></i>
                                                     </span>
                                                     <span class="text">Out</span>
-                                                </a>
+                                                </a> -->
                                                 <a data-toggle="modal" data-target="#modalEdit<?= $data['id'] ?>" href="#" class="btn btn-info btn-sm btn-icon-split">
                                                     <span class="icon text-white-50">
                                                         <i class="fas fa-pencil-alt"></i>
@@ -241,31 +235,35 @@ $data_mesin = mysqli_query($mysqli, "SELECT * FROM tb_stok_mesin WHERE deleted_a
                                                         <div class="form-group row">
                                                             <label for="nama_mesin" class="col-4 col-form-label">Nama Mesin</label> 
                                                             <div class="col-8">
-                                                            <input id="nama_mesin" name="nama_mesin" type="text" class="form-control" value="<?= $data['nama_mesin'] ?>">
+                                                            <!-- <input id="nama_mesin" name="nama_mesin" type="text" class="form-control" value="<?= $data['nama_mesin'] ?>"> -->
+                                                            <select id="nama_mesin" name="nama_mesin" class="form-control">
+                                                                <option>Pilih Nama Mesin</option>
+                                                                <option <?= ($data['nama_mesin']) == 'sn' ? 'selected ' : '' ?>value="sn">SN</option>
+                                                                <option <?= ($data['nama_mesin']) == 'obras' ? 'selected ' : '' ?>value="obras">OBRAS</option>
+                                                                <option <?= ($data['nama_mesin']) == 'overdeck' ? 'selected ' : '' ?>value="overdeck">OVERDECK</option>
+                                                                <option <?= ($data['nama_mesin']) == 'kansai' ? 'selected ' : '' ?>value="kansai">KANSAI</option>
+                                                                <option <?= ($data['nama_mesin']) == 'flatseam' ? 'selected ' : '' ?>value="flatseam">FLATSEAM</option>
+                                                                <option <?= ($data['nama_mesin']) == 'bartrack' ? 'selected ' : '' ?>value="bartrack">BARTRACK</option>
+                                                                <option <?= ($data['nama_mesin']) == 'bth' ? 'selected ' : '' ?>value="bth">BTH</option>
+                                                                <option <?= ($data['nama_mesin']) == 'dn' ? 'selected ' : '' ?>value="dn">DN</option>
+                                                                <option <?= ($data['nama_mesin']) == 'mh' ? 'selected ' : '' ?>value="mh">MH</option>
+                                                            </select>
                                                             </div>
                                                         </div>
                                                         <div class="form-group row">
-                                                            <label for="merk" class="col-4 col-form-label">Merek Mesin</label> 
+                                                            <label for="no_id_mesin" class="col-4 col-form-label">No. ID Mesin</label> 
                                                             <div class="col-8">
-                                                            <input id="merk" name="merk" placeholder="Merek Mesin" type="text" class="form-control" value="<?= $data['merk_mesin'] ?>">
+                                                            <input id="no_id_mesin" name="no_id_mesin" placeholder="Nomor ID Mesin" type="text" class="form-control" value="<?= $data['no_id_mesin'] ?>">
                                                             </div>
                                                         </div>
                                                         <div class="form-group row">
-                                                            <label for="stok" class="col-4 col-form-label">Stok Sekarang</label> 
+                                                            <label for="stok" class="col-4 col-form-label">Status</label> 
                                                             <div class="col-8">
-                                                            <input id="stok" name="stok" placeholder="Jumlah Restock Mesin Masuk" type="text" class="form-control" disabled value="<?= $data['stok'] ?>">
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group row">
-                                                            <label for="harga" class="col-4 col-form-label">Harga</label> 
-                                                            <div class="col-8">
-                                                            <input id="harga" name="harga" placeholder="Harga Mesin" type="text" class="form-control" value="<?= $data['harga'] ?>">
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group row">
-                                                            <label for="deskripsi" class="col-4 col-form-label">Deskripsi Mesin</label> 
-                                                            <div class="col-8">
-                                                            <textarea id="deskripsi" name="deskripsi" cols="40" rows="2" class="form-control"><?= $data['deskripsi'] ?></textarea>
+                                                            <select id="status" name="status" class="form-control">
+                                                                <option>Pilih Status</option>
+                                                                <option <?= ($data['status']) == 'aset' ? 'selected ' : ''?> value="aset">ASET</option>
+                                                                <option <?= ($data['status']) == 'sewa' ? 'selected ' : ''?> value="sewa">SEWA</option>
+                                                            </select>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -278,65 +276,6 @@ $data_mesin = mysqli_query($mysqli, "SELECT * FROM tb_stok_mesin WHERE deleted_a
                                                 </div>
                                                 </div>
 
-                                                <!-- Modal Restock-->
-                                                <div class="modal fade" id="modalRestock<?= $data['id'] ?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                                <div class="modal-dialog">
-                                                    <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title" id="exampleModalLabel">Restok Mesin</h5>
-                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                        <span aria-hidden="true">&times;</span>
-                                                        </button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <form method="POST" action="../core/crud.php">
-                                                        <input type="hidden" name="id_mesin" value="<?= $data['id'] ?>">
-                                                        <input type="hidden" name="stok_sekarang" value="<?= $data['stok'] ?>">
-                                                        <div class="form-group row">
-                                                            <label for="nama_mesin" class="col-4 col-form-label">Nama Mesin</label> 
-                                                            <div class="col-8">
-                                                            <input id="nama_mesin" name="nama_mesin" type="text" class="form-control" value="<?= $data['nama_mesin'] ?>" disabled>
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group row">
-                                                            <label for="merk" class="col-4 col-form-label">Merek Mesin</label> 
-                                                            <div class="col-8">
-                                                            <input id="merk" name="merk" placeholder="Merek Mesin" type="text" class="form-control" value="<?= $data['merk_mesin'] ?>" disabled>
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group row">
-                                                            <label for="jml_masuk" class="col-4 col-form-label">Jumlah Restok</label> 
-                                                            <div class="col-8">
-                                                            <input id="jml_masuk" name="jml_masuk" placeholder="Jumlah Restock Mesin Masuk" type="text" class="form-control">
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group row">
-                                                            <label for="harga" class="col-4 col-form-label">Harga</label> 
-                                                            <div class="col-8">
-                                                            <input id="harga" name="harga" placeholder="Harga Mesin" type="text" class="form-control" value="<?= $data['harga'] ?>" disabled>
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group row">
-                                                            <label for="deskripsi" class="col-4 col-form-label">Deskripsi Mesin</label> 
-                                                            <div class="col-8">
-                                                            <textarea id="deskripsi" name="deskripsi" cols="40" rows="2" class="form-control" disabled><?= $data['deskripsi'] ?></textarea>
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group row">
-                                                            <label for="keterangan" class="col-4 col-form-label">Keterangan</label> 
-                                                            <div class="col-8">
-                                                            <textarea id="keterangan" name="keterangan" cols="40" rows="4" class="form-control"></textarea>
-                                                            </div>
-                                                        </div> 
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-                                                        <button type="submit" name="restock" class="btn btn-primary">Restock <i class="fas fa-paper-plane    "></i></button>
-                                                        </form>
-                                                    </div>
-                                                    </div>
-                                                </div>
-                                                </div>
 
                                                 <!-- Modal Hapus -->
                                                 <div class="modal fade" id="modalHapus<?= $data['id'] ?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -379,8 +318,7 @@ $data_mesin = mysqli_query($mysqli, "SELECT * FROM tb_stok_mesin WHERE deleted_a
                                                         <div class="form-group row">
                                                             <label for="nama_mesin" class="col-4 col-form-label">Nama Mesin</label> 
                                                             <div class="col-8">
-                                                            <input id="nama_mesin" name="nama_mesin" type="text" class="form-control" value="<?= $data['nama_mesin'] ?>" disabled>
-                                                            </div>
+                                                            
                                                         </div>
                                                         <div class="form-group row">
                                                             <label for="jml_keluar" class="col-4 col-form-label">Jumlah Stock Out</label> 
@@ -444,6 +382,61 @@ $data_mesin = mysqli_query($mysqli, "SELECT * FROM tb_stok_mesin WHERE deleted_a
 
     </div>
     <!-- End of Page Wrapper -->
+
+    <!-- Modal Tambah-->
+    <div class="modal fade" id="modalTambah" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">Input Mesin Baru</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+        <form method="POST" action="../core/crud.php">
+            <div class="form-group row">
+                <label for="nama_mesin" class="col-4 col-form-label">Nama Mesin</label> 
+                <div class="col-8">
+                <select id="nama_mesin" name="nama_mesin" class="form-control">
+                    <option>Pilih Nama Mesin</option>
+                    <option value="sn">SN</option>
+                    <option value="obras">OBRAS</option>
+                    <option value="overdeck">OVERDECK</option>
+                    <option value="kansai">KANSAI</option>
+                    <option value="flatseam">FLATSEAM</option>
+                    <option value="bartrack">BARTRACK</option>
+                    <option value="bth">BTH</option>
+                    <option value="dn">DN</option>
+                    <option value="mh">MH</option>
+                </select>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="no_id_mesin" class="col-4 col-form-label">ID Mesin</label> 
+                <div class="col-8">
+                <input id="no_id_mesin" name="no_id_mesin" placeholder="Nomor ID Mesin" type="text" class="form-control">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="status" class="col-4 col-form-label">Status</label> 
+                <div class="col-8">
+                <select id="status" name="status" class="form-control">
+                    <option>Pilih Status</option>
+                    <option value="aset">ASET</option>
+                    <option value="sewa">SEWA</option>
+                </select>
+                </div>  
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+            <button type="submit" name="submit_baru" class="btn btn-success">Simpan <i class="fas fa-save    "></i></button>
+        </div>
+        </form>
+        </div>
+    </div>
+    </div>
 
     <!-- Scroll to Top Button-->
     <a class="scroll-to-top rounded" href="#page-top">
